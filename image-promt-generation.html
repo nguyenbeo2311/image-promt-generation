@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Promt Generation Advanced by BB</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: #1e1e1e;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 800px; /* Tăng chiều rộng tối đa một chút để vừa 3 cột */
+        }
+        h1 {
+            color: #bb86fc;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #03dac6;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        /* Lớp cho bố cục 1 cột mặc định */
+        .grid-one-column {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        /* LỚP MỚI: Dành cho bố cục 3 cột */
+        .grid-three-columns {
+            display: grid;
+            /* Chia thành 3 cột, mỗi cột chiếm 1 phần bằng nhau */
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px; /* Giảm khoảng cách một chút */
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #bb86fc;
+        }
+        input[type="text"], textarea, select {
+            background-color: #333;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 14px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #bb86fc;
+            box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.25);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        button {
+            flex-grow: 1;
+            background-color: #bb86fc;
+            color: #121212;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #a765f1;
+        }
+        .result-box {
+            margin-top: 2rem;
+        }
+        #finalPrompt {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #252525;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 15px;
+            min-height: 120px;
+        }
+        #copyBtn {
+            background-color: #03dac6;
+        }
+        #copyBtn:hover {
+            background-color: #01b8a5;
+        }
+
+        /* CSS cho màn hình nhỏ hơn (ví dụ: điện thoại) */
+        @media (max-width: 768px) {
+            .grid-three-columns {
+                grid-template-columns: 1fr; /* Quay về 1 cột trên màn hình nhỏ */
+            }
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🎨 Image Promt Generation Advance by BB</h1>
+        
+        <h2>Nội dung chính</h2>
+        <div class="grid-one-column">
+            <div class="form-group">
+                <label for="subject_details">[Chi tiết chủ thể]</label>
+                <textarea id="subject_details" placeholder="1 người phụ nữ châu Á trẻ, khoảng 20-30 tuổi..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="action_details">[Mô tả hành động]</label>
+                <textarea id="action_details" placeholder="...nhẹ nhàng cầm đóa sen, nhìn xuống..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="context_details">[Bối cảnh chi tiết]</label>
+                <textarea id="context_details" placeholder="...đứng trên một chiếc thuyền gỗ nhỏ..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="context_details">[Tone & mood]</label>
+                <textarea id="context_details" placeholder="...dịu dàng, nhẹ nhàng, êm đềm..."></textarea>
+            </div>
+        </div>
+
+        <h2>Phong cách</h2>
+        <div class="grid-three-columns">
+             <div class="form-group">
+                <label for="photo_type">[Photo type]</label>
+                <select id="photo_type">
+                    <option value="">-- Không chọn --</option>
+                    <option value="Photorealistic">Photorealistic</option>
+                    <option value="Ultra realistic">Ultra realistic</option>
+                    <option value="Hyperrealistic">Hyperrealistic</option>
+                    <option value="4K">4K res</option>
+                    <option value="8K">8K res</option>
+                    <option value="UHD">UHD</option>
+                    <option value="blurred vision">blurred vision</option>
+                    <option value="inbloom">inbloom</option>
+                    <option value="filmlandscapes">filmlandscapes</option>
+                    <option value="black and white">black and white</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="photo_style">[Photography style]</label>
+                <select id="photo_style">
+                    <option value="">-- Không chọn --</option>
+                    <option value="Portrait photography">Portrait</option>
+                    <option value="Landscape photography">Landscape</option>
+                    <option value="Street photography">Street</option>
+                    <option value="Fashion photography">Fashion</option>
+                    <option value="Cinematic">Cinematic</option>
+                    <option value="Architectural photography">Architectural</option>
+                    <option value="Photojournalism">Photojournalism</option>
+                    <option value="Document photography">Documentary</option>
+                    <option value="Product photography">Product</option>
+                    <option value="Advertising photography">Advertising</option>
+                    <option value="Abstract photography">Abstract</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="camera_type">[Camera type]</label>
+                <select id="camera_type">
+                    <option value="">-- Không chọn --</option>
+                    <option value="DSLR camera">DSLR</option>
+                    <option value="Film camera">Film</option>
+                    <option value="Compact camera">Compact</option>
+                </select>
+            </div>
+        </div>
+        
+        <h2>Lighting</h2>
+        <div class="grid-three-columns">
+            <div class="form-group">
+                <label for="lighting_type">Kiểu ánh sáng</label>
+                <select id="lighting_type">
+                    <option value="">-- Mặc định --</option>
+                    <option value="soft natural light">Tự nhiên nhẹ</option>
+                    <option value="dramatic studio lighting">Kịch tính</option>
+                    <option value="moody lighting">Cảm xúc</option>
+                    <option value="High-Key Lighting">High Key</option>
+                    <option value="cinematic lighting">Cinematic</option>
+                    <option value="Natural Light">Natural</option>
+                    <option value="Window Light">Window</option>
+                </select>
+            </div>
+             <div class="form-group">
+                <label for="lighting_time">Thời điểm</label>
+                <select id="lighting_time">
+                    <option value="">-- Mặc định --</option>
+                    <option value="Golden Hour">Giờ vàng</option>
+                    <option value="Blue Hour">Bình minh/Hoàng hôn</option>
+                    <option value="Harsh Midday Light">Nắng gắt</option>
+                    <option value="Open Shade Light">Bóng râm</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="lighting_effect">[Lighting Effect]</label>
+                <select id="lighting_effect">
+                    <option value="">-- Mặc định --</option>
+                    <option value="Rim light">Rim light (viền)</option>
+                    <option value="Backlit">Backlit (ngược sáng)</option>
+                    <option value="Volumetric lighting">Volumetric (khối)</option>
+                    <option value="Long exposure">Long exposure</option>
+                    <option value="Natural lighting">Natural</option>
+                    <option value="Hair light">Hair light</option>
+                </select>
+            </div>
+        </div>
+        
+        <h2>Composition & Camera</h2>
+        <div class="grid-three-columns">
+            <div class="form-group">
+                <label for="camera_angle">Camera angle</label>
+                <select id="camera_angle">
+                    <option value="">-- Mặc định --</option>
+                    <option value="High-Angle Shot">Góc cao</option>
+                    <option value="Low-Angle Shot">Góc thấp</option>
+                    <option value="Eye-Level Shot">Góc ngang</option>
+                    <option value="Bird's-Eye View">Nhìn từ trên</option>
+                    <option value="Aerial View">Nhìn toàn cảnh</option>
+                    <option value="Worm's-Eye View">Nhìn từ dưới</option>
+                </select>
+            </div>
+             <div class="form-group">
+                <label for="shot_size">Shot size</label>
+                <select id="shot_size">
+                    <option value="">-- Mặc định --</option>
+                    <option value="Extreme Wide Shot">Siêu rộng</option>
+                    <option value="Wide Shot">Rộng</option>
+                    <option value="Medium Shot">trung</option>
+                    <option value="Medium Close-Up">Cận trung</option>
+                    <option value="Close-Up">Cận cảnh</option>
+                    <option value="Extreme Close-Up">Cận cận cảnh</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="composition">Composition</label>
+                <select id="composition">
+                    <option value="">-- Mặc định --</option>
+                    <option value="Point of View Shot">POV shot</option>
+                    <option value="Over-the-Shoulder Shot">Góc nhìn chủ quan</option>
+                    <option value="Reaction Shot">Góc nhìn biểu cảm</option>
+                    <option value="Dutch Angle">Góc nghiêng</option>
+                </select>
+            </div>
+             <div class="form-group">
+                <label for="camera_lens">Camera Lens</label>
+                <select id="camera_lens">
+                    <option value="">-- Mặc định --</option>
+                    <option value="35mm lens">35mm</option>
+                    <option value="50mm lens">50mm</option>
+                    <option value="85mm lens">85mm</option>
+                    <option value="wide-angle lens">Góc rộng</option>
+                    <option value="macro lens">Macro</option>
+                    <option value="fish-eyes dynamic lens"> fish-eyes</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="result-box">
+            <h2>Prompt Hoàn Chỉnh</h2>
+            <textarea id="finalPrompt" readonly></textarea>
+        </div>
+
+        <div class="action-buttons">
+            <button id="generateBtn">Tạo Prompt</button>
+            <button id="copyBtn">Sao Chép</button>
+        </div>
+    </div>
+
+    <script>
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+
+        function generatePrompt() {
+            const fieldIds = [
+                'subject_details', 'action_details', 'context_details',
+                'photo_type', 'photo_style', 'camera_type',
+                'lighting_type', 'lighting_time', 'lighting_effect',
+                'camera_angle', 'shot_size', 'composition', 'camera_lens'
+            ];
+            const promptParts = fieldIds.map(id => {
+                const element = document.getElementById(id);
+                return element.value ? element.value.trim() : '';
+            });
+            
+            const finalPromptString = promptParts.filter(part => part).join(', ');
+            document.getElementById('finalPrompt').value = finalPromptString;
+        }
+
+        function copyPrompt() {
+            const finalPrompt = document.getElementById('finalPrompt');
+            if (finalPrompt.value === "") {
+                alert("Chưa có prompt để sao chép!");
+                return;
+            }
+            finalPrompt.select();
+            navigator.clipboard.writeText(finalPrompt.value).then(() => {
+                alert('Đã sao chép prompt!');
+            }).catch(err => {
+                console.error('Lỗi khi sao chép: ', err);
+            });
+        }
+        
+        generateBtn.addEventListener('click', generatePrompt);
+        copyBtn.addEventListener('click', copyPrompt);
+    </script>
+
+</body>
+</html>
